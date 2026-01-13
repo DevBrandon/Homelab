@@ -1,0 +1,7 @@
+- name: Configure Raspberry Pi hosts
+  hosts: all
+  become: true
+  roles:
+    - common
+    - docker
+    - portainer

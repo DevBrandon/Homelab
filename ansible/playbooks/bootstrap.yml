@@ -1,0 +1,15 @@
+- name: Bootstrap Raspberry Pi
+  hosts: all
+  become: true
+  tasks:
+    - name: Ensure Python is installed
+      raw: |
+        test -e /usr/bin/python3 || (apt update && apt install -y python3)
+      changed_when: false
+      register: python_check
+
+    - name: Ensure Python3 pip is installed
+      raw: |
+        test -e /usr/bin/pip3 || (apt update && apt install -y python3-pip)
+      changed_when: false
+      when: python_check.rc == 0

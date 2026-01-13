@@ -1,0 +1,4 @@
+ansible_user: pi
+timezone: UTC
+docker_users:
+  - pi

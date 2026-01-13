@@ -1,0 +1,23 @@
+- name: Ensure Portainer image is present
+  community.docker.docker_image:
+    name: portainer/portainer-ce
+    tag: latest
+    source: pull
+
+- name: Create Portainer volume
+  community.docker.docker_volume:
+    name: portainer_data
+    state: present
+
+- name: Run Portainer container
+  community.docker.docker_container:
+    name: portainer
+    image: portainer/portainer-ce:latest
+    restart_policy: always
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    state: started
+    detach: true
