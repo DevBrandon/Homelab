@@ -1,0 +1,33 @@
+- name: Ensure services directory exists
+  file:
+    path: /opt/services
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy service definitions
+  copy:
+    src: "{{ playbook_dir }}/../services/{{ item }}/"
+    dest: /opt/services/{{ item }}
+    owner: root
+    group: root
+    mode: '0755'
+  loop: "{{ services_to_deploy }}"
+  loop_control:
+    label: "{{ item }}"
+
+- name: Ensure Docker Compose is available
+  command: docker compose version
+  register: compose_check
+  changed_when: false
+  failed_when: false
+
+- name: Start services with Docker Compose
+  command: docker compose up -d
+  args:
+    chdir: /opt/services/{{ item }}
+  loop: "{{ services_to_deploy }}"
+  loop_control:
+    label: "{{ item }}"
+  when: compose_check.rc == 0

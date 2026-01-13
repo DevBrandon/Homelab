@@ -4,4 +4,4 @@
   roles:
     - common
     - docker
-    - portainer
+    - services

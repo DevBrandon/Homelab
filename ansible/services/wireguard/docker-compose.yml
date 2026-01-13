@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  wireguard:
+    image: lscr.io/linuxserver/wireguard:latest
+    container_name: wireguard
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+      - SERVERURL=wireguard.example.com  # Set via .env or override
+      - SERVERPORT=51820
+      - PEERS=1
+      - PEERDNS=1.1.1.1
+      - INTERNAL_SUBNET=10.13.13.0
+    volumes:
+      - wireguard_data:/config
+      - /lib/modules:/lib/modules:ro
+    ports:
+      - "51820:51820/udp"
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+
+  wireguard-ui:
+    image: ngoduykhanh/wireguard-ui:latest
+    container_name: wireguard-ui
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - SENDGRID_API_KEY=
+      - EMAIL_FROM_ADDRESS=
+      - EMAIL_FROM_NAME=
+      - WGUI_SERVER_NAME=wireguard.example.com
+      - WGUI_SERVER_URL=http://wireguard.example.com:5000
+      - WGUI_USERNAME=admin
+      - WGUI_PASSWORD=admin
+    volumes:
+      - wireguard_ui_data:/app/db
+      - wireguard_data:/etc/wireguard:ro
+    depends_on:
+      - wireguard
+
+volumes:
+  wireguard_data:
+  wireguard_ui_data:

@@ -1,0 +1,4 @@
+# Infrastructure group services
+services_to_deploy:
+  - portainer
+  - monitoring

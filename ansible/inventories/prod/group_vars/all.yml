@@ -2,3 +2,7 @@ ansible_user: pi
 timezone: UTC
 docker_users:
   - pi
+
+# Services to deploy (list of service directory names from services/)
+services_to_deploy:
+  - portainer
